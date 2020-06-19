@@ -107,20 +107,17 @@ public class SpotifyLogin {
     ///   - url: url to handle.
     ///   - completion: Returns an optional error or nil if successful.
     /// - Returns: Whether or not the URL was handled.
-    public func applicationOpenURL(_ url: URL, completion: @escaping (Error?) -> Void) -> Bool {
-        guard let urlBuilder = urlBuilder,
-            let redirectURL = redirectURL,
-            let clientID = clientID,
-            let clientSecret = clientSecret else {
+    public func applicationOpenURL(_ url: URL, completion: @escaping (Result<String, Error>) -> Void) -> Bool {
+        guard let urlBuilder = urlBuilder else {
             DispatchQueue.main.async {
-                completion(LoginError.configurationMissing)
+                completion(.failure(LoginError.configurationMissing))
             }
             return false
         }
 
         guard urlBuilder.canHandleURL(url) else {
             DispatchQueue.main.async {
-                completion(LoginError.invalidUrl)
+                completion(.failure(LoginError.invalidUrl))
             }
             return false
         }
@@ -129,23 +126,11 @@ public class SpotifyLogin {
 
         let parsedURL = urlBuilder.parse(url: url)
         if let code = parsedURL.code, !parsedURL.error {
-            Networking.createSession(code: code,
-                                     redirectURL: redirectURL,
-                                     clientID: clientID,
-                                     clientSecret: clientSecret,
-                                     completion: { [weak self] session, error in
-                DispatchQueue.main.async {
-                    if error == nil {
-                        self?.session = session
-                        NotificationCenter.default.post(name: .SpotifyLoginSuccessful, object: nil)
-                    }
-                    completion(error)
-                }
-            })
+            completion(.success(code))
         } else {
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .SpotifyLoginSuccessful, object: nil)
-                completion(LoginError.invalidUrl)
+                completion(.failure(LoginError.invalidUrl))
             }
         }
         return true
