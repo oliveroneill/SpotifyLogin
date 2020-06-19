@@ -126,7 +126,9 @@ public class SpotifyLogin {
 
         let parsedURL = urlBuilder.parse(url: url)
         if let code = parsedURL.code, !parsedURL.error {
-            completion(.success(code))
+            DispatchQueue.main.async {
+                completion(.success(code))
+            }
         } else {
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .SpotifyLoginSuccessful, object: nil)
