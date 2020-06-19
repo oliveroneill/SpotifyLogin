@@ -17,13 +17,13 @@ import Foundation
 internal class URLBuilder {
 
     let clientID: String
-    let clientSecret: String
+    let clientSecret: String?
     let redirectURL: URL
     let showDialog: Bool
 
     // MARK: Lifecycle
 
-    internal init(clientID: String, clientSecret: String, redirectURL: URL, showDialog: Bool) {
+    internal init(clientID: String, clientSecret: String?, redirectURL: URL, showDialog: Bool) {
         self.clientID = clientID
         self.clientSecret = clientSecret
         self.redirectURL = redirectURL
