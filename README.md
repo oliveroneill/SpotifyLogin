@@ -68,7 +68,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 ### Setting up with [CocoaPods](http://cocoapods.org/?q=SpotifyLogin)
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
-pod 'SpotifyLogin', '~> 0.1'
+pod 'SpotifyLogin', :git => 'https://github.com/oliveroneill/SpotifyLogin.git'
 ```
 
 ### Setting up with Carthage
