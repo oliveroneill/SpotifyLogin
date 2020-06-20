@@ -53,9 +53,9 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 
 func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
     let handled = SpotifyLogin.shared.applicationOpenURL(url) { (result) in
-        if case let .failure(error) = $0 {
+        if case let .failure(error) = result {
             // Handle error
-        } else if case let .success(code) = $0 {
+        } else if case let .success(code) = result {
             // Use the code to retrieve an access token on the server-side
         }
     }
