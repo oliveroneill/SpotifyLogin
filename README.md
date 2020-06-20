@@ -47,64 +47,20 @@ Add the following to your app delegate:
 
 ```swift
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-    SpotifyLogin.shared.configure(clientID: <#T##String#>, clientSecret: <#T##String#>, redirectURL: <#T##URL#>)
+    SpotifyLogin.shared.configure(clientID: <#T##String#>, redirectURL: <#T##URL#>)
     return true
 }
 
 func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-    let handled = SpotifyLogin.shared.applicationOpenURL(url) { (error) in }
+    let handled = SpotifyLogin.shared.applicationOpenURL(url) { (result) in
+        if case let .failure(error) = $0 {
+            // Handle error
+        } else if case let .success(code) = $0 {
+            // Use the code to retrieve an access token on the server-side
+        }
+    }
     return handled
 }
-```
-
-### Check if a user is logged in.
-
-You can retrieve an access token and check if a user is logged in by:
-
-```swift
-SpotifyLogin.shared.getAccessToken { (accessToken, error) in
-    if error != nil {
-        // User is not logged in, show log in flow.
-    }
-}
-```
-
-This also automatically takes care of renewing expired tokens. 
-
-### Log in / Log out
-
-To add the default log in button:
-```swift
-let button = SpotifyLoginButton(viewController: self, scopes: [.streaming, .userLibraryRead])
-self.view.addSubview(button)
-```
-
-The scopes define the set of permissions your app will be able to use. For more information about available scopes, see [Scopes Documentation](https://developer.spotify.com/web-api/using-scopes/)
-
-To log out:
-
-```swift
-SpotifyLogin.shared.logout()
-```
-
-### Update UI after successful log in.
-
-The log in flow is completed in applicationOpenURL. To respond to a successful log in, you can add your own code in the completion handler or respond to the SpotifyLoginSuccessful notification: 
-
-```swift
-NotificationCenter.default.addObserver(self, selector: #selector(loginSuccessful), name: .SpotifyLoginSuccessful, object: nil)
-```
-
-### Additional features
-
-Access the current user's username:
-```swift
-let username = SpotifyLogin.shared.username
-```
-
-To trigger the log in flow from a custom action:
-```swift
-SpotifyLoginPresenter.login(from: self, scopes: [.streaming, .userLibraryRead])
 ```
 
 ## Setting up
